@@ -1,0 +1,33 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / IDE-specific files
+.DS_Store
+Thumbs.db
+
+# Sequelize CLI migration logs (optional)
+sequelize-debug.log
+
+# Build files (if using TypeScript or transpilation)
+dist/
+build/
+
+# Optional: local database backups
+*.sqlite
+*.db
+
+# VS Code settings (optional)
+.vscode/
+
+# Coverage reports (if using testing tools like Jest)
+coverage/
