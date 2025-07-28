@@ -4,37 +4,42 @@ A fully-featured RESTful API for a blogging platform built with **Node.js**, **E
 
 ## Features
 
-- ✅ User Registration & Login with JWT Authentication
-- 🔐 Password hashing using bcrypt
-- 🧾 CRUD for Posts, Comments, and Likes *(Coming soon)*
-- 📦 Sequelize ORM for database interaction
-- 🌱 Environment configuration with `dotenv`
-- 📂 Organized folder structure (MVC-style)
-- 🌐 RESTful routing and error handling
+- JWT-based Authentication with bcrypt-hashed passwords
+- CRUD operations for Posts
+- Commenting system (Create, Update, Delete)
+- Toggle Likes on posts
+- Image Upload support using `multer`
+- Sequelize ORM with PostgreSQL
+- Environment-based configuration with `.env`
+- Organized MVC-style folder structure
+- RESTful API routes
 
-## 📁 Project Structure
+---
+
+## Project Structure
 
 ```
 blog-api-backend/
 ├── config/             # Sequelize DB config
-├── controllers/        # Controller functions
-├── middlewares/        # Middleware (auth, error handling)
+├── controllers/        # Controller functions (auth, post, like, comment)
+├── middlewares/        # Authentication & File Upload Middleware
 ├── models/             # Sequelize models
-├── routes/             # Route files (auth, posts, etc.)
+├── routes/             # API route handlers
 ├── migrations/         # Sequelize migration files
-├── seeders/            # Dummy data population (optional)
+├── seeders/            # Data seeding (optional)
+├── uploads/            # Uploaded images
 ├── .env                # Environment variables
-├── .gitignore          # Ignored files in Git
-├── app.js              # Express app setup
-├── server.js           # Entry point
+├── .gitignore          # Git ignored files
+├── app.js              # Main Express app
+├── server.js           # App entry point
 └── README.md           # Project documentation
 ```
 
-## 🧪 API Endpoints
+---
 
-### 🔐 Auth Routes
+## Authentication Routes
 
-#### Register
+### Register
 
 ```
 POST /api/auth/register
@@ -48,7 +53,7 @@ POST /api/auth/register
 }
 ```
 
-#### Login
+### Login
 
 ```
 POST /api/auth/login
@@ -61,21 +66,39 @@ POST /api/auth/login
 }
 ```
 
-#### Successful Login Response
+> Returns JWT token to be used in Authorization header as `Bearer <token>`.
 
-```json
-{
-  "token": "JWT_TOKEN",
-  "user": {
-    "id": 1,
-    "username": "hari",
-    "email": "hari@example.com",
-    "role": "user"
-  }
-}
-```
+---
 
-> Use the token in the `Authorization: Bearer <token>` header for protected routes.
+## Post Routes
+
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET    | `/api/posts` | Public | Get all posts |
+| GET    | `/api/posts/:id` | Public | Get a specific post |
+| POST   | `/api/posts/` | Auth | Create a new post |
+| PUT    | `/api/posts/:id` | Auth | Update your post |
+| DELETE | `/api/posts/:id` | Auth | Delete your post |
+
+> You can also upload an image via `multipart/form-data` with `image` field.
+
+---
+
+## Comment Routes
+
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST   | `/api/comments/:postId` | Auth | Add a comment to a post |
+| PUT    | `/api/comments/:id` | Auth | Edit a comment |
+| DELETE | `/api/comments/:id` | Auth | Delete a comment |
+
+---
+
+## Like Routes
+
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST   | `/api/likes/:postId` | Auth | Like or Unlike a post |
 
 ---
 
@@ -94,20 +117,20 @@ cd blog-api-backend
 npm install
 ```
 
-### 3. Configure `.env`
+### 3. Configure Environment Variables
 
 Create a `.env` file:
 
 ```env
 PORT=3000
-DB_USER=your_db_username
-DB_PASS=your_db_password
+DB_USER=your_db_user
+DB_PASS=your_db_pass
 DB_NAME=your_db_name
 DB_HOST=localhost
-JWT_SECRET=your_secret_key
+JWT_SECRET=your_jwt_secret
 ```
 
-### 4. Setup Database
+### 4. Setup the Database
 
 ```bash
 npx sequelize db:create
@@ -127,18 +150,9 @@ npm start
 - **Backend**: Node.js, Express.js
 - **Database**: PostgreSQL
 - **ORM**: Sequelize
-- **Authentication**: JWT & bcrypt
+- **Authentication**: JWT + bcrypt
+- **File Uploads**: multer
 - **Environment Config**: dotenv
-
----
-
-## TODO
-
-- [x] User Authentication (Register & Login)
-- [ ] Post CRUD Routes
-- [ ] Comment & Like Routes
-- [ ] Pagination & Search
-- [ ] Image Uploads with Multer / Cloudinary
 
 ---
 
@@ -151,4 +165,4 @@ npm start
 
 ## License
 
-This project is licensed under the MIT License.
+Licensed under the [MIT License](LICENSE).
