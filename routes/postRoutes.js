@@ -12,6 +12,7 @@ const { authenticate } = require('../middlewares/authMiddleware');
 // Public Routes
 router.get('/', getAllPosts);
 router.get('/:id', getPostById);
+router.get('/', getAllPosts);
 
 // Protected Routes
 router.post('/', authenticate, createPost);

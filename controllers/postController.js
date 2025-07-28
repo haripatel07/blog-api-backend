@@ -23,36 +23,36 @@ exports.createPost = async (req, res) => {
 };
 
 exports.getAllPosts = async (req, res) => {
-  try {
-    const { page = 1, limit = 10, sort = 'DESC', search = '' } = req.query;
-    const offset = (page - 1) * limit;
+  const { search = '', page = 1, limit = 10 } = req.query;
+  const offset = (page - 1) * limit;
 
-    const posts = await Post.findAndCountAll({
-      where: {
-        [Op.or]: [
-          { title: { [Op.iLike]: `%${search}%` } },
-          { content: { [Op.iLike]: `%${search}%` } }
-        ]
-      },
-      include: [
-        { model: User, attributes: ['id', 'username', 'email'] },
-        { model: Comment },
-        { model: Like }
-      ],
-      order: [['createdAt', sort]],
-      limit: parseInt(limit),
-      offset: parseInt(offset)
-    });
+    try {
+      const posts = await Post.findAndCountAll({
+        where: {
+          [Op.or]: [
+            { title: { [Op.iLike]: `%${search}%` } },
+            { content: { [Op.iLike]: `%${search}%` } }
+          ]
+        },
+        include: [
+          { model: User, attributes: ['id', 'username', 'email'] },
+          { model: Comment },
+          { model: Like }
+        ],
+        limit: parseInt(limit),
+        offset: parseInt(offset),
+        order: [['createdAt', 'DESC']]
+      });
 
-    res.status(200).json({
-      totalPosts: posts.count,
-      currentPage: parseInt(page),
-      totalPages: Math.ceil(posts.count / limit),
-      posts: posts.rows
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch posts', error: error.message });
-  }
+      res.status(200).json({
+        totalPosts: posts.count,
+        totalPages: Math.ceil(posts.count / limit),
+        currentPage: parseInt(page),
+        posts: posts.rows
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch posts', error });
+    }
 };
 
 exports.getPostById = async (req, res) => {
@@ -108,3 +108,4 @@ exports.deletePost = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete post', error: error.message });
   }
 };
+
